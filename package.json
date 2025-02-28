@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "pm2:start": "pm2 start npm --name wave-link -- start",
-    "pm2:stop": "pm2 stop wave-link",
-    "pm2:restart": "pm2 restart wave-link",
-    "pm2:monitor": "pm2 monit wave-link"
+    "pm2:start": "pm2 start ecosystem.config.js --env prod",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:monitor": "pm2 monit ecosystem.config.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@next/third-parties": "^15.2.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
@@ -48,6 +49,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
     "embla-carousel-react": "8.5.1",
     "immer": "latest",
     "input-otp": "1.4.1",

@@ -2,6 +2,7 @@ import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -39,6 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
+      {process.env.APP_CONFIG === "production" ? (
+        <>
+          {process.env.GA_ID ? <GoogleAnalytics gaId={process.env.GA_ID} /> : null}
+        </>
+      ) : null}
+      {process.env.APP_CONFIG || 'No App Config'}
+      {process.env.GA_ID || 'No GA Id'}
     </html>
   )
 }

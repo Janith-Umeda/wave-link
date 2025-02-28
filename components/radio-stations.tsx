@@ -87,6 +87,7 @@ function StationCard({ station, onPlay }: { station: RadioStation; onPlay: (stat
               // Fallback if image fails to load
               e.currentTarget.src = "/placeholder.svg?height=225&width=400"
             }}
+            priority
           />
         ) : (
           <div className="flex h-full items-center justify-center">
