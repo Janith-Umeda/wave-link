@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { Play, Radio } from "lucide-react"
+import { Heart, Play, Radio } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -11,13 +11,14 @@ import { useRadioStore } from "@/lib/store"
 import type { RadioStation } from "@/lib/types"
 
 export function RadioStations() {
-  const { stations, loading, filter, fetchStations, setCurrentStation } = useRadioStore()
+  const { stations, loading, filter, fetchStations, setCurrentStation, currentStation, toggleFavorite, favorites, isPlaying } = useRadioStore()
 
   useEffect(() => {
     fetchStations()
   }, [fetchStations])
 
   const filteredStations = stations.filter((station) => {
+    if (filter.onlyFavorites) return favorites.includes(station.url)
     if (!filter.search) return true
     return station.title.toLowerCase().includes(filter.search.toLowerCase())
   })
@@ -47,21 +48,43 @@ export function RadioStations() {
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <Radio className="h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-medium">No stations found</h3>
-        <p className="text-muted-foreground">Try adjusting your search terms</p>
+        <p className="text-muted-foreground">Try adjusting your search terms or filters</p>
       </div>
     )
   }
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {filteredStations.map((station) => (
-        <StationCard key={station.url} station={station} onPlay={setCurrentStation} />
+      {filteredStations.map((station, index) => (
+        <StationCard
+          key={station.url}
+          station={station}
+          isPlaying={isPlaying && currentStation?.url === station.url}
+          onPlay={setCurrentStation}
+          onToggleFavorite={toggleFavorite}
+          isFavorite={favorites.includes(station.url)}
+          priority={index < 6}
+        />
       ))}
     </div>
   )
 }
 
-function StationCard({ station, onPlay }: { station: RadioStation; onPlay: (station: RadioStation) => void }) {
+function StationCard({
+  station,
+  isPlaying,
+  onPlay,
+  onToggleFavorite,
+  isFavorite,
+  priority,
+}: {
+  station: RadioStation
+  isPlaying: boolean
+  onPlay: (station: RadioStation) => void
+  onToggleFavorite: (url: string) => void
+  isFavorite: boolean
+  priority: boolean
+}) {
   const getBitrateFromTitle = (title: string) => {
     const match = title.match(/(\d+)\s*kbit\/s/)
     return match ? match[1] : null
@@ -70,7 +93,6 @@ function StationCard({ station, onPlay }: { station: RadioStation; onPlay: (stat
   const bitrate = getBitrateFromTitle(station.title)
 
   const handlePlay = () => {
-    console.log("Playing station:", station.title) // Add this line for debugging
     onPlay(station)
   }
 
@@ -82,12 +104,11 @@ function StationCard({ station, onPlay }: { station: RadioStation; onPlay: (stat
             src={station["tvg-logo"] || "/placeholder.svg?height=225&width=400"}
             alt={station.title}
             fill
-            className="object-cover"
+            className="object-contain"
+            priority={priority}
             onError={(e) => {
-              // Fallback if image fails to load
               e.currentTarget.src = "/placeholder.svg?height=225&width=400"
             }}
-            priority
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -104,10 +125,31 @@ function StationCard({ station, onPlay }: { station: RadioStation; onPlay: (stat
           </Badge>
         )}
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button variant="default" className="w-full" onClick={handlePlay}>
-          <Play className="mr-2 h-4 w-4" />
-          Play Station
+      <CardFooter className="p-4 pt-0 flex justify-between">
+        <Button
+          variant={isPlaying ? "default" : "outline"}
+          className={`flex-1 mr-2 ${isPlaying ? "bg-green-500 hover:bg-green-600" : ""}`}
+          onClick={handlePlay}
+        >
+          {isPlaying ? (
+            <>
+              <Play className="mr-2 h-4 w-4" />
+              Playing
+            </>
+          ) : (
+            <>
+              <Play className="mr-2 h-4 w-4" />
+              Play Station
+            </>
+          )}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onToggleFavorite(station.url)}
+          className={isFavorite ? "text-red-500" : ""}
+        >
+          <Heart className="h-4 w-4" fill={isFavorite ? "currentColor" : "none"} />
         </Button>
       </CardFooter>
     </Card>

@@ -1,38 +1,50 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { Search } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Search, Heart } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useRadioStore } from "@/lib/store"
 
 export function SearchFilter() {
   const [searchTerm, setSearchTerm] = useState("")
-  const setFilter = useRadioStore((state) => state.setFilter)
+  const { setFilter, filter } = useRadioStore()
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFilter({ search: searchTerm })
+  useEffect(() => {
+    const debounceSearch = setTimeout(() => {
+      setFilter({ search: searchTerm })
+    }, 300)
+
+    return () => clearTimeout(debounceSearch)
+  }, [searchTerm, setFilter])
+
+  const toggleFavorites = () => {
+    setFilter({ onlyFavorites: !filter.onlyFavorites })
   }
 
   return (
     <div className="mb-6 space-y-4">
       <h2 className="text-xl font-semibold">Find Your Station</h2>
-      <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
-        <Input
-          type="text"
-          placeholder="Search stations..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1"
-        />
-        <Button type="submit" size="icon">
-          <Search className="h-4 w-4" />
-          <span className="sr-only">Search</span>
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search stations..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        <Button
+          variant={filter.onlyFavorites ? "default" : "outline"}
+          size="icon"
+          onClick={toggleFavorites}
+          title={filter.onlyFavorites ? "Show all stations" : "Show favorites only"}
+        >
+          <Heart className="h-4 w-4" fill={filter.onlyFavorites ? "currentColor" : "none"} />
         </Button>
-      </form>
+      </div>
     </div>
   )
 }

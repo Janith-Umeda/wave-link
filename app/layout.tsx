@@ -45,8 +45,6 @@ export default function RootLayout({
           {process.env.GA_ID ? <GoogleAnalytics gaId={process.env.GA_ID} /> : null}
         </>
       ) : null}
-      {process.env.APP_CONFIG || 'No App Config'}
-      {process.env.GA_ID || 'No GA Id'}
     </html>
   )
 }

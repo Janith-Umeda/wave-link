@@ -9,5 +9,6 @@ export interface RadioFilter {
   search?: string
   group?: string
   bitrate?: string
+  onlyFavorites?: boolean
 }
 

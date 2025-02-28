@@ -5,13 +5,14 @@ import Image from "next/image"
 import { useRadioStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { Pause, Play, Radio, Volume2, VolumeX } from "lucide-react"
+import { Pause, Play, Radio, Volume2, VolumeX, Loader } from "lucide-react"
 import { AudioSpectrogram } from "./audio-spectrogram"
 import { usePageTitle } from "@/hooks/usePageTitle"
 
 export function AudioPlayer() {
-  const { currentStation, setCurrentStation } = useRadioStore()
-  const [isPlaying, setIsPlaying] = useState(false)
+  const { currentStation, setCurrentStation, isPlaying, setIsPlaying } = useRadioStore()
+  // const [isPlaying, setIsPlaying] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [volume, setVolume] = useState(80)
   const [isMuted, setIsMuted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,16 +24,19 @@ export function AudioPlayer() {
   useEffect(() => {
     if (currentStation && audioRef.current) {
       setError(null)
+      setIsLoading(true)
       audioRef.current.src = currentStation.url
       audioRef.current.load()
       audioRef.current
         .play()
         .then(() => {
           setIsPlaying(true)
+          setIsLoading(false)
         })
         .catch((err) => {
           console.error("Error playing audio:", err)
           setIsPlaying(false)
+          setIsLoading(false)
           setError("This station couldn't be played. It may be offline or not supported by your browser.")
         })
     }
@@ -51,13 +55,16 @@ export function AudioPlayer() {
         setIsPlaying(false)
       } else {
         setError(null)
+        setIsLoading(true)
         audioRef.current
           .play()
           .then(() => {
             setIsPlaying(true)
+            setIsLoading(false)
           })
           .catch((err) => {
             console.error("Error playing audio:", err)
+            setIsLoading(false)
             setError("This station couldn't be played. It may be offline or not supported by your browser.")
           })
       }
@@ -70,6 +77,7 @@ export function AudioPlayer() {
 
   const handleAudioError = () => {
     setIsPlaying(false)
+    setIsLoading(false)
     setError("This station couldn't be played. It may be offline or not supported by your browser.")
   }
 
@@ -86,7 +94,7 @@ export function AudioPlayer() {
                   src={currentStation["tvg-logo"] || "/placeholder.svg"}
                   alt={currentStation.title}
                   fill
-                  className="object-cover rounded-md"
+                  className="object-contain rounded-md"
                   onError={(e) => {
                     e.currentTarget.src = "/placeholder.svg?height=64&width=64"
                   }}
@@ -105,8 +113,14 @@ export function AudioPlayer() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="icon" onClick={togglePlayPause}>
-              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            <Button variant="outline" size="icon" onClick={togglePlayPause} disabled={isLoading}>
+              {isLoading ? (
+                <Loader className="h-4 w-4 animate-spin" />
+              ) : isPlaying ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
             </Button>
 
             <div className="flex items-center space-x-2">
