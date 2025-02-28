@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "",
+    url: "https://wavelink.music-tools.com",
     siteName: "WaveLink",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://wavelink.music-tools.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "WaveLink - Your Global Radio Companion",
