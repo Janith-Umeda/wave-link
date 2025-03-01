@@ -9,7 +9,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(url)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 seconds timeout
+
+    const response = await fetch(url, { signal: controller.signal })
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
