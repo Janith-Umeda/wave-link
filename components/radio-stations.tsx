@@ -7,11 +7,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useRadioStore } from "@/lib/store"
+import { useRadioStoreContext } from "./radio-store-provider"
 import type { RadioStation } from "@/lib/types"
 
 export function RadioStations() {
-  const { stations, loading, filter, fetchStations, setCurrentStation, currentStation, toggleFavorite, favorites, isPlaying } = useRadioStore()
+  const { stations, loading, filter, fetchStations, setCurrentStation, currentStation, toggleFavorite, favorites, isPlaying } = useRadioStoreContext()
 
   useEffect(() => {
     fetchStations()

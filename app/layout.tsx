@@ -3,6 +3,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { AudioPlayer } from "@/components/audio-player"
+import { RadioStoreProvider } from "@/components/radio-store-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "WaveLink",
     images: [
       {
-        url: "https://wavelink.music-tools.com/og-image.png",
+        url: "https://wavelink.music-tools.com/images/wavelink.svg",
         width: 1200,
         height: 630,
         alt: "WaveLink - Your Global Radio Companion",
@@ -39,7 +41,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <RadioStoreProvider>
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">{children}</div>
+            <AudioPlayer />
+          </div>
+        </RadioStoreProvider>  
+      </body>
       {process.env.APP_CONFIG === "production" ? (
         <>
           {process.env.GA_ID ? <GoogleAnalytics gaId={process.env.GA_ID} /> : null}

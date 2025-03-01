@@ -2,21 +2,7 @@
 
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { RadioStation, RadioFilter } from "@/lib/types"
-
-interface RadioState {
-  stations: RadioStation[]
-  currentStation: RadioStation | null
-  loading: boolean
-  filter: RadioFilter
-  favorites: string[]
-  isPlaying: boolean
-  fetchStations: () => Promise<void>
-  setCurrentStation: (station: RadioStation | null) => void
-  setFilter: (filter: Partial<RadioFilter>) => void
-  toggleFavorite: (url: string) => void
-  setIsPlaying: (isPlaying: boolean) => void
-}
+import type { RadioState } from "@/lib/types"
 
 export const useRadioStore = create<RadioState>()(
   persist(

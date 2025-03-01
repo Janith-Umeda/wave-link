@@ -2,15 +2,16 @@
 
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { useRadioStore } from "@/lib/store"
+// import { useRadioStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Pause, Play, Radio, Volume2, VolumeX, Loader } from "lucide-react"
 import { AudioSpectrogram } from "./audio-spectrogram"
 import { usePageTitle } from "@/hooks/usePageTitle"
+import { useRadioStoreContext } from "./radio-store-provider"
 
 export function AudioPlayer() {
-  const { currentStation, setCurrentStation, isPlaying, setIsPlaying } = useRadioStore()
+  const { currentStation, setCurrentStation, isPlaying, setIsPlaying } = useRadioStoreContext()
   // const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [volume, setVolume] = useState(80)

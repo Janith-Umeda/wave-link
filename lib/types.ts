@@ -12,3 +12,20 @@ export interface RadioFilter {
   onlyFavorites?: boolean
 }
 
+export interface RadioState {
+  stations: RadioStation[]
+  currentStation: RadioStation | null
+  loading: boolean
+  filter: RadioFilter
+  favorites: string[]
+  isPlaying: boolean
+  fetchStations: () => Promise<void>
+  setCurrentStation: (station: RadioStation | null) => void
+  setFilter: (filter: Partial<RadioFilter>) => void
+  toggleFavorite: (url: string) => void
+  setIsPlaying: (isPlaying: boolean) => void
+}
+
+export type RadioStoreContextType = {
+  [K in keyof RadioState]: RadioState[K]
+}

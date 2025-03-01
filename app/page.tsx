@@ -1,16 +1,17 @@
 import Link from "next/link"
 import { RadioStations } from "@/components/radio-stations"
 import { SearchFilter } from "@/components/search-filter"
-import { AudioPlayer } from "@/components/audio-player"
+// import { AudioPlayer } from "@/components/audio-player"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Info } from "lucide-react"
+import { Logo } from "@/components/logo"
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between py-4">
-          <h1 className="text-2xl font-bold tracking-tight">WaveLink</h1>
+          <Logo />
         </div>
       </header>
 
@@ -28,9 +29,9 @@ export default function Home() {
         <RadioStations />
       </main>
 
-      <AudioPlayer />
+      {/* <AudioPlayer /> */}
 
-      <footer className="border-t bg-background py-4 text-center text-sm text-muted-foreground">
+      <footer className="border-t bg-background py-4 text-center text-sm text-muted-foreground mb-24">
         <div className="container">
           <p>&copy; {new Date().getFullYear()} WaveLink. All rights reserved.</p>
           <nav className="mt-2">
