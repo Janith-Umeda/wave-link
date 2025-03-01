@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Heart, Play, Radio } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -98,26 +99,30 @@ function StationCard({
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
-      <div className="aspect-[16/9] relative bg-muted">
-        {station["tvg-logo"] ? (
-          <Image
-            src={station["tvg-logo"] || "/placeholder.svg?height=225&width=400"}
-            alt={station.title}
-            fill
-            className="object-contain"
-            priority={priority}
-            onError={(e) => {
-              e.currentTarget.src = "/placeholder.svg?height=225&width=400"
-            }}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <Radio className="h-16 w-16 text-muted-foreground" />
-          </div>
-        )}
-      </div>
+      <Link href={`/station/${encodeURIComponent(station.title)}`}>
+        <div className="aspect-[16/9] relative bg-muted">
+          {station["tvg-logo"] ? (
+            <Image
+              src={station["tvg-logo"] || "/placeholder.svg?height=225&width=400"}
+              alt={station.title}
+              fill
+              className="object-contain"
+              priority={priority}
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg?height=225&width=400"
+              }}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <Radio className="h-16 w-16 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+      </Link>
       <CardContent className="p-4">
-        <h3 className="font-medium line-clamp-1">{station.title}</h3>
+        <Link href={`/station/${encodeURIComponent(station.title)}`}>
+          <h3 className="font-medium line-clamp-1">{station.title}</h3>
+        </Link>
         <p className="text-sm text-muted-foreground">{station["group-title"]}</p>
         {bitrate && (
           <Badge variant="outline" className="mt-2">

@@ -5,6 +5,7 @@ import { Inter } from "next/font/google"
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AudioPlayer } from "@/components/audio-player"
 import { RadioStoreProvider } from "@/components/radio-store-provider"
+import { Logo } from "@/components/logo";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -44,10 +45,15 @@ export default function RootLayout({
       <body className={inter.className}>
         <RadioStoreProvider>
           <div className="flex flex-col min-h-screen">
+            <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+              <div className="container flex h-16 items-center justify-between py-4">
+                <Logo />
+              </div>
+            </header>
             <div className="flex-grow">{children}</div>
             <AudioPlayer />
           </div>
-        </RadioStoreProvider>  
+        </RadioStoreProvider>
       </body>
       {process.env.APP_CONFIG === "production" ? (
         <>

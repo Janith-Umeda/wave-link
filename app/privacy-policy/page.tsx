@@ -9,12 +9,6 @@ export const metadata = {
 export default function PrivacyPolicy() {
     return (
         <div className="min-h-screen flex flex-col">
-            <header className="border-b bg-background">
-                <div className="container flex h-16 items-center">
-                    <Logo />
-                </div>
-            </header>
-
             <main className="container mx-auto px-4 py-8 flex-1">
                 <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
                 <p className="mb-4">Last updated: {new Date().toLocaleDateString()}</p>
