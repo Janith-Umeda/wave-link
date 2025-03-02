@@ -87,7 +87,7 @@ function StationCard({
   priority: boolean
 }) {
   const getBitrateFromTitle = (title: string) => {
-    const match = title.match(/(\d+)\s*kbit\/s/)
+    const match = title?.match(/(\d+)\s*kbit\/s/)
     return match ? match[1] : null
   }
 
