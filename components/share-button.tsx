@@ -3,13 +3,20 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Share2 } from "lucide-react"
+import { sendGAEvent } from "@next/third-parties/google"
 
 export function ShareButton({ stationId }: { stationId: string }) {
     const [shared, setShared] = useState(false)
 
     const handleShare = async () => {
-        const shareUrl = `${window.location.origin}/station/${stationId}`
+        const shareUrl = `${window.location.origin}/station/${stationId}?utm_source=share&utm_medium=social&utm_campaign=station_share`
 
+        sendGAEvent('event', 'share', {
+            'event_category': 'engagement',
+            'event_label': stationId,
+            'platform': typeof navigator.share === "function" ? "web_share_api" : "clipboard"
+        });
+        
         if (navigator.share) {
             try {
                 await navigator.share({
