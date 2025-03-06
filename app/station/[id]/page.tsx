@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { StationPlayer } from "@/components/station-player"
 import { ShareButton } from "@/components/share-button"
 import { getStationById } from "@/lib/api"
+import { proxyUrl } from '@/lib/utils'
 
 type Props = {
     params: { id: string }
@@ -82,14 +83,14 @@ export default async function StationPage({ params }: Props) {
                     </ol>
                 </nav>
                 <article className="flex flex-col md:flex-row gap-8">
-                    <div className="md:w-1/3">
-                        <figure className="aspect-square relative bg-muted rounded-lg overflow-hidden">
+                    <div className="md:w-1/4">
+                        <figure className="aspect-square relative bg-muted rounded-lg overflow-hidden border">
                             {station["tvg-logo"] ? (
                                 <Image
-                                    src={station["tvg-logo"] || "/placeholder.svg"}
+                                    src={proxyUrl(station["tvg-logo"], 'image') || "/placeholder.svg"}
                                     alt={`${station.title} logo`}
                                     fill
-                                    className="object-cover"
+                                    className="object-contain p-4"
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
@@ -98,7 +99,7 @@ export default async function StationPage({ params }: Props) {
                             )}
                         </figure>
                     </div>
-                    <div className="md:w-2/3">
+                    <div className="md:w-3/4">
                         <header>
                             <h1 className="text-3xl font-bold mb-4">{station.title}</h1>
                             <p className="text-lg text-muted-foreground mb-4">{station["group-title"]}</p>

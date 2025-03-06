@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Heart, Play, Radio } from "lucide-react"
+import { Heart, Play, Radio, Pause } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -26,15 +26,15 @@ export function RadioStations() {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {Array(6)
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        {Array(12)
           .fill(0)
           .map((_, i) => (
             <Card key={i} className="overflow-hidden">
-              <div className="aspect-[16/9] bg-muted">
+              <div className="aspect-square bg-muted">
                 <Skeleton className="h-full w-full" />
               </div>
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="mt-2 h-4 w-2/3" />
               </CardContent>
@@ -55,7 +55,7 @@ export function RadioStations() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
       {filteredStations.map((station, index) => (
         <StationCard
           key={station.url}
@@ -64,7 +64,7 @@ export function RadioStations() {
           onPlay={setCurrentStation}
           onToggleFavorite={toggleFavorite}
           isFavorite={favorites.includes(station.url)}
-          priority={index < 6}
+          priority={index < 12}
         />
       ))}
     </div>
@@ -93,71 +93,68 @@ function StationCard({
 
   const bitrate = getBitrateFromTitle(station.title)
 
-  const handlePlay = () => {
+  const handlePlay = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     onPlay(station)
   }
 
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onToggleFavorite(station.url)
+  }
+
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
-      <Link href={`/station/${encodeURIComponent(station.title)}`}>
-        <div className="aspect-[16/9] relative bg-muted">
+    <Link href={`/station/${station.slug}`}>
+      <Card className="overflow-hidden transition-all hover:shadow-md h-full flex flex-col">
+        <div className="aspect-square relative bg-muted">
           {station["tvg-logo"] ? (
             <Image
-              src={station["tvg-logo"] || "/placeholder.svg?height=225&width=400"}
+              src={station["tvg-logo"] || "/placeholder.svg?height=200&width=200"}
               alt={station.title}
               fill
-              className="object-contain"
+              className="object-contain p-2"
               priority={priority}
               onError={(e) => {
-                e.currentTarget.src = "/placeholder.svg?height=225&width=400"
+                ;(e.target as HTMLImageElement).src = "/placeholder.svg?height=200&width=200"
               }}
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Radio className="h-16 w-16 text-muted-foreground" />
+              <Radio className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
+          <div className="absolute bottom-2 right-2 flex space-x-1">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 rounded-full opacity-90 hover:opacity-100"
+              onClick={handlePlay}
+            >
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className={`h-8 w-8 rounded-full opacity-90 hover:opacity-100 ${isFavorite ? "text-red-500" : ""}`}
+              onClick={handleFavorite}
+            >
+              <Heart className="h-4 w-4" fill={isFavorite ? "currentColor" : "none"} />
+            </Button>
+          </div>
         </div>
-      </Link>
-      <CardContent className="p-4">
-        <Link href={`/station/${encodeURIComponent(station.title)}`}>
-          <h3 className="font-medium line-clamp-1">{station.title}</h3>
-        </Link>
-        <p className="text-sm text-muted-foreground">{station["group-title"]}</p>
-        {bitrate && (
-          <Badge variant="outline" className="mt-2">
-            {bitrate} kbps
-          </Badge>
-        )}
-      </CardContent>
-      <CardFooter className="p-4 pt-0 flex justify-between">
-        <Button
-          variant={isPlaying ? "default" : "outline"}
-          className={`flex-1 mr-2 ${isPlaying ? "bg-green-500 hover:bg-green-600" : ""}`}
-          onClick={handlePlay}
-        >
-          {isPlaying ? (
-            <>
-              <Play className="mr-2 h-4 w-4" />
-              Playing
-            </>
-          ) : (
-            <>
-              <Play className="mr-2 h-4 w-4" />
-              Play Station
-            </>
+        <CardContent className="p-3 flex-grow flex flex-col">
+          <h3 className="font-medium text-sm line-clamp-1">{station.title}</h3>
+          <p className="text-xs text-muted-foreground line-clamp-1">{station["group-title"]}</p>
+          {bitrate && (
+            <Badge variant="outline" className=" self-start text-xs px-1.5 py-0 h-5 mt-2">
+              {bitrate} kbps
+            </Badge>
           )}
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onToggleFavorite(station.url)}
-          className={isFavorite ? "text-red-500" : ""}
-        >
-          <Heart className="h-4 w-4" fill={isFavorite ? "currentColor" : "none"} />
-        </Button>
-      </CardFooter>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }
 

@@ -8,6 +8,6 @@ export async function getStations(): Promise<RadioStation[]> {
 
 export async function getStationById(id: string): Promise<RadioStation | undefined> {
     const stations = await getStations()
-    return stations.find((station) => station.title === decodeURIComponent(id))
+    return stations.find((station) => station.slug === id)
 }
 

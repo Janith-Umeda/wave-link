@@ -3,6 +3,7 @@ export interface RadioStation {
   "group-title": string
   title: string
   url: string
+  slug: string
 }
 
 export interface RadioFilter {

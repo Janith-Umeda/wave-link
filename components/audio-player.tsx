@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
@@ -17,12 +16,9 @@ export function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
-  const pathname = usePathname()
 
   // Use the custom hook to manage page title
   usePageTitle()
-
-  const isStationPage = pathname.startsWith("/station/")
 
   useEffect(() => {
     if (currentStation && audioRef.current) {
@@ -84,8 +80,6 @@ export function AudioPlayer() {
     setError("This station couldn't be played. It may be offline or not supported by your browser.")
   }
 
-  const isHidden = isStationPage
-
   if (!currentStation) {
     return (
       <div className="fixed bottom-0 left-0 right-0 border-t bg-background p-4 shadow-lg">
@@ -97,7 +91,7 @@ export function AudioPlayer() {
   }
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 ${isHidden ? "hidden" : ""}`}>
+    <div className={`fixed bottom-0 left-0 right-0`}>
       <div className="fixed bottom-0 left-0 right-0 border-t bg-background p-4 shadow-lg">
         <div className="container flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
